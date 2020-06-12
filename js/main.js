@@ -16,6 +16,13 @@ var MOCK_NAMES = ['Артём', 'Елена', 'Михаил', 'Ольга', 'А�
 var photoPattern = document.querySelector('#picture').content.querySelector('.picture');
 var photosContainer = document.querySelector('.pictures');
 
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureImage = bigPicture.querySelector('.big-picture__img img');
+var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
+var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
+var bigPictureComments = bigPicture.querySelector('.social__comments');
+var bigPictureCaption = bigPicture.querySelector('.social__caption');
+
 
 var randomInteger = function (min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -64,7 +71,7 @@ var buildMock = function () {
   for (i = 0; i < MOCK_LENGTH; i++) {
     var photo = {};
     photo.url = 'photos/' + peekRandomElement(photoNumbers) + '.jpg';
-    photo.description = '';
+    photo.description = 'Фотография #' + (i + 1);
     photo.likes = randomInteger(MOCK_LIKES_MIN, MOCK_LIKES_MAX);
     photo.comments = buildComments();
 
@@ -94,6 +101,52 @@ var renderPhotos = function (photos) {
   photosContainer.appendChild(fragment);
 };
 
+var makeCommentElement = function (comment) {
+  var commentElement = document.createElement('LI');
+  commentElement.className = 'social__comment';
+
+  var commentImage = document.createElement('IMG');
+  commentImage.className = 'social__picture';
+  commentImage.src = comment.avatar;
+  commentImage.alt = comment.name;
+  commentImage.width = 35;
+  commentImage.height = 35;
+  commentElement.appendChild(commentImage);
+
+  var commentText = document.createElement('P');
+  commentText.className = 'social__text';
+  commentText.textContent = comment.message;
+  commentElement.appendChild(commentText);
+
+  return commentElement;
+};
+
+
+var showBigPicture = function (photo) {
+  bigPictureImage.src = photo.url;
+  bigPictureLikesCount.textContent = photo.likes;
+  bigPictureCommentsCount.textContent = photo.comments.length;
+  bigPictureCaption.textContent = photo.description;
+
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < photo.comments.length; i++) {
+    fragment.appendChild(makeCommentElement(photo.comments[i]));
+  }
+
+  while (bigPictureComments.lastElementChild) {
+    bigPictureComments.removeChild(bigPictureComments.lastElementChild);
+  }
+  bigPictureComments.appendChild(fragment);
+
+  bigPicture.querySelector('.social__comment-count').classList.add('hidden');
+  bigPicture.querySelector('.comments-loader').classList.add('hidden');
+
+  bigPicture.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+};
+
 
 var mock = buildMock();
 renderPhotos(mock);
+
+showBigPicture(mock[0]);

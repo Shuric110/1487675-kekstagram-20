@@ -12,6 +12,7 @@ var MOCK_MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 var MOCK_NAMES = ['Артём', 'Елена', 'Михаил', 'Ольга', 'Алексей', 'Джеймс', 'Хелен', 'Кекс'];
+var KEY_ESC = 27;
 
 var photoPattern = document.querySelector('#picture').content.querySelector('.picture');
 var photosContainer = document.querySelector('.pictures');
@@ -23,6 +24,7 @@ var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
 var bigPictureComments = bigPicture.querySelector('.social__comments');
 var bigPictureCaption = bigPicture.querySelector('.social__caption');
 
+var uploadFileButton = document.querySelector('#upload-file');
 
 var randomInteger = function (min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -146,7 +148,57 @@ var showBigPicture = function (photo) {
 };
 
 
+var openModalWindow = function (modalSelector, closeSelector, closeCallback) {
+  var wnd = document.querySelector(modalSelector);
+  var wndCloseButton = wnd.querySelector(closeSelector);
+
+  var closeModalWindow = function () {
+    if (closeCallback) {
+      closeCallback();
+    }
+
+    if (wndCloseButton) {
+      wndCloseButton.removeEventListener('click', onCloseClick);
+    }
+    window.removeEventListener('keydown', onKeyDown);
+
+    wnd.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  };
+
+  var onKeyDown = function (evt) {
+    if (evt.keyCode === KEY_ESC) {
+      closeModalWindow();
+    }
+  };
+
+  var onCloseClick = function () {
+    closeModalWindow();
+  };
+
+  if (wndCloseButton) {
+    wndCloseButton.addEventListener('click', onCloseClick);
+  }
+  window.addEventListener('keydown', onKeyDown);
+
+  wnd.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+};
+
+
 var mock = buildMock();
 renderPhotos(mock);
 
-showBigPicture(mock[0]);
+// showBigPicture(mock[0]);
+
+uploadFileButton.addEventListener('change', function () {
+  var reader = new FileReader();
+  reader.addEventListener('load', function (evt) {
+    document.querySelector('.img-upload__preview img').src = evt.target.result;
+  });
+  reader.readAsDataURL(uploadFileButton.files[0]);
+
+  openModalWindow('.img-upload__overlay', '#upload-cancel', function () {
+    uploadFileButton.value = '';
+  });
+});

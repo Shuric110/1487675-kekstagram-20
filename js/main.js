@@ -162,9 +162,11 @@ var showBigPicture = function (photo) {
     fragment.appendChild(makeCommentElement(photo.comments[i]));
   }
 
-  while (bigPictureComments.lastElementChild) {
-    bigPictureComments.removeChild(bigPictureComments.lastElementChild);
+  var oldComments = bigPictureComments.querySelectorAll('.social__comment');
+  for (i = 0; i < oldComments.length; i++) {
+    bigPictureComments.removeChild(oldComments[i]);
   }
+
   bigPictureComments.appendChild(fragment);
 
   bigPicture.querySelector('.social__comment-count').classList.add('hidden');

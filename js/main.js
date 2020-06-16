@@ -12,7 +12,6 @@ var MOCK_MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 var MOCK_NAMES = ['Артём', 'Елена', 'Михаил', 'Ольга', 'Алексей', 'Джеймс', 'Хелен', 'Кекс'];
-var KEY_ESC = 27;
 var EFFECT_DEF = {
   none: {filter: '', minLevel: 0, maxLevel: 0, levelUnit: ''},
   chrome: {filter: 'grayscale', minLevel: 0, maxLevel: 1, levelUnit: ''},
@@ -203,7 +202,7 @@ var openModalWindow = function (wnd, wndCloseButtons, closeCallback) {
   };
 
   var onKeyDown = function (evt) {
-    if (evt.keyCode === KEY_ESC) {
+    if (evt.key === 'Escape') {
       closeModalWindow();
     }
   };

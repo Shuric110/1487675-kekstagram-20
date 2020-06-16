@@ -28,6 +28,7 @@ var photoPattern = document.querySelector('#picture').content.querySelector('.pi
 var photosContainer = document.querySelector('.pictures');
 
 var bigPicture = document.querySelector('.big-picture');
+var bigPictureClose = bigPicture.querySelector('#picture-cancel');
 var bigPictureImage = bigPicture.querySelector('.big-picture__img img');
 var bigPictureLikesCount = bigPicture.querySelector('.likes-count');
 var bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
@@ -114,6 +115,7 @@ var makePhotoElement = function (photo) {
   photoElement.querySelector('.picture__img').src = photo.url;
   photoElement.querySelector('.picture__likes').textContent = photo.likes;
   photoElement.querySelector('.picture__comments').textContent = photo.comments.length;
+  photoElement.photoData = photo;
 
   return photoElement;
 };
@@ -168,8 +170,18 @@ var showBigPicture = function (photo) {
   bigPicture.querySelector('.social__comment-count').classList.add('hidden');
   bigPicture.querySelector('.comments-loader').classList.add('hidden');
 
-  bigPicture.classList.remove('hidden');
-  document.body.classList.add('modal-open');
+  openModalWindow(bigPicture, [bigPictureClose]);
+};
+
+var onPhotoClick = function (evt) {
+  var target = evt.target;
+  while (target && !target.matches('.picture')) {
+    target = target.parentNode;
+  }
+  if (target.photoData) {
+    evt.preventDefault();
+    showBigPicture(target.photoData);
+  }
 };
 
 
@@ -313,13 +325,6 @@ var openEditWindow = function () {
     return true;
   };
 
-  /*
-  var onSubmit = function (evt) {
-    if (!validateHashTags()) {
-      evt.preventDefault();
-    }
-  };*/
-
   var onHashTagsChange = function () {
     validateHashTags();
   };
@@ -360,12 +365,13 @@ var openEditWindow = function () {
   });
 };
 
+var onUploadChange = function () {
+  openEditWindow();
+};
+
 
 var mock = buildMock();
 renderPhotos(mock);
 
-// showBigPicture(mock[0]);
-
-uploadFileButton.addEventListener('change', function () {
-  openEditWindow();
-});
+photosContainer.addEventListener('click', onPhotoClick);
+uploadFileButton.addEventListener('change', onUploadChange);

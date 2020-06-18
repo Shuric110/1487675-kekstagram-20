@@ -176,10 +176,10 @@ var showBigPicture = function (photo) {
 
 var onPhotoClick = function (evt) {
   var target = evt.target;
-  while (target && !target.matches('.picture')) {
+  while (target && target.matches && !target.matches('.picture')) {
     target = target.parentNode;
   }
-  if (target.photoData) {
+  if (target && target.photoData) {
     evt.preventDefault();
     showBigPicture(target.photoData);
   }

@@ -12,6 +12,9 @@ var MOCK_MESSAGES = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 var MOCK_NAMES = ['Артём', 'Елена', 'Михаил', 'Ольга', 'Алексей', 'Джеймс', 'Хелен', 'Кекс'];
+var COMMENT_IMAGE_WIDTH = 35;
+var COMMENT_IMAGE_HEIGHT = 35;
+var EFFECT_NONE = 'none';
 var EFFECT_DEF = {
   none: {filter: '', minLevel: 0, maxLevel: 0, levelUnit: ''},
   chrome: {filter: 'grayscale', minLevel: 0, maxLevel: 1, levelUnit: ''},
@@ -20,8 +23,18 @@ var EFFECT_DEF = {
   phobos: {filter: 'blur', minLevel: 0, maxLevel: 3, levelUnit: 'px'},
   heat: {filter: 'brightness', minLevel: 1, maxLevel: 3, levelUnit: ''}
 };
+var EFFECT_MAX_LEVEL = 100;
+var SCALE_CHANGE_STEP = 25;
+var SCALE_MIN_LEVEL = 25;
+var SCALE_MAX_LEVEL = 100;
 var MAX_HASHTAGS = 5;
 var MAX_HASHTAG_LENGTH = 20;
+var HASHTAG_ERROR_TOOMANY = 'Слишком много хэш-тегов (максимум - ' + MAX_HASHTAGS + ')';
+var HASHTAG_ERROR_NO = 'Ошибка в хэш-теге № ';
+var HASHTAG_ERROR_FORMAT = 'хэш-тег должен начинаться с символа # и содержать только буквы (минимум 1)';
+var HASHTAG_ERROR_TOOLONG = 'хэш-тег слишком длинный (максимум символов - ' + MAX_HASHTAG_LENGTH + ')';
+var HASHTAG_ERROR_REUSE = 'повторное использование';
+var KEY_ESCAPE = 'Escape';
 
 var photoPattern = document.querySelector('#picture').content.querySelector('.picture');
 var photosContainer = document.querySelector('.pictures');
@@ -137,8 +150,8 @@ var makeCommentElement = function (comment) {
   commentImage.className = 'social__picture';
   commentImage.src = comment.avatar;
   commentImage.alt = comment.name;
-  commentImage.width = 35;
-  commentImage.height = 35;
+  commentImage.width = COMMENT_IMAGE_WIDTH;
+  commentImage.height = COMMENT_IMAGE_HEIGHT;
   commentElement.appendChild(commentImage);
 
   var commentText = document.createElement('P');
@@ -202,7 +215,7 @@ var openModalWindow = function (wnd, wndCloseButtons, closeCallback) {
   };
 
   var onKeyDown = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === KEY_ESCAPE) {
       closeModalWindow();
     }
   };
@@ -225,6 +238,9 @@ var openEditWindow = function () {
   var pictureEffect;
 
   var setPictureScale = function (newPictureScale) {
+    if (pictureScale === newPictureScale) {
+      return;
+    }
     pictureScale = newPictureScale;
     editWindowScaleValue.value = pictureScale + '%';
     editWindowPreviewImage.style.transform = 'scale(' + (pictureScale / 100) + ')';
@@ -236,9 +252,9 @@ var openEditWindow = function () {
     }
     pictureEffect = newPictureEffect;
     editWindowPreviewImage.classList.add('effects__preview--' + pictureEffect);
-    editWindowEffectLevel.classList.toggle('hidden', pictureEffect === 'none');
+    editWindowEffectLevel.classList.toggle('hidden', pictureEffect === EFFECT_NONE);
 
-    setPictureEffectLevel(100);
+    setPictureEffectLevel(EFFECT_MAX_LEVEL);
   };
 
   var setPictureEffectLevel = function (newPictureEffectLevel) {
@@ -248,19 +264,15 @@ var openEditWindow = function () {
 
     var effectDef = EFFECT_DEF[pictureEffect];
     editWindowPreviewImage.style.filter = (!effectDef.filter) ? '' :
-      effectDef.filter + '(' + (effectDef.minLevel + (effectDef.maxLevel - effectDef.minLevel) / 100 * newPictureEffectLevel) + effectDef.levelUnit + ')';
+      effectDef.filter + '(' + (effectDef.minLevel + (effectDef.maxLevel - effectDef.minLevel) / EFFECT_MAX_LEVEL * newPictureEffectLevel) + effectDef.levelUnit + ')';
   };
 
   var onBiggerClick = function () {
-    if (pictureScale < 100) {
-      setPictureScale(pictureScale + 25);
-    }
+    setPictureScale(pictureScale + SCALE_CHANGE_STEP < SCALE_MAX_LEVEL ? pictureScale + SCALE_CHANGE_STEP : SCALE_MAX_LEVEL);
   };
 
   var onSmallerClick = function () {
-    if (pictureScale > 25) {
-      setPictureScale(pictureScale - 25);
-    }
+    setPictureScale(pictureScale - SCALE_CHANGE_STEP > SCALE_MIN_LEVEL ? pictureScale - SCALE_CHANGE_STEP : SCALE_MIN_LEVEL);
   };
 
   var onEffectChange = function (evt) {
@@ -276,9 +288,9 @@ var openEditWindow = function () {
 
     var onEffectLevelPinMouseMove = function (evtMove) {
       evtMove.preventDefault();
-      var newLevel = (evtMove.clientX - baseX) * 100 / baseWidth;
+      var newLevel = (evtMove.clientX - baseX) * EFFECT_MAX_LEVEL / baseWidth;
       newLevel = (newLevel < 0) ? 0 : newLevel;
-      newLevel = (newLevel > 100) ? 100 : newLevel;
+      newLevel = (newLevel > EFFECT_MAX_LEVEL) ? EFFECT_MAX_LEVEL : newLevel;
       newLevel = Math.round(newLevel);
       setPictureEffectLevel(newLevel);
     };
@@ -298,23 +310,23 @@ var openEditWindow = function () {
 
     for (var i = 0; i < hashTags.length; i++) {
       if (i >= MAX_HASHTAGS) {
-        editWindowHashTags.setCustomValidity('Слишком много хэш-тегов (максимум - ' + MAX_HASHTAGS + ')');
+        editWindowHashTags.setCustomValidity(HASHTAG_ERROR_TOOMANY);
         return false;
       }
 
       if (!hashTags[i].match(/^#[a-zа-я]+$/i)) {
-        editWindowHashTags.setCustomValidity('Ошибка в хэш-теге № ' + (i + 1) + ': хэш-тег должен начинаться с символа # и содердать только буквы');
+        editWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_FORMAT);
         return false;
       }
 
       if (hashTags[i].length > MAX_HASHTAG_LENGTH) {
-        editWindowHashTags.setCustomValidity('Ошибка в хэш-теге № ' + (i + 1) + ': хэш-тег слишком длинный (максимум символов - ' + MAX_HASHTAG_LENGTH + ')');
+        editWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_TOOLONG);
         return false;
       }
 
       var hashTagLower = hashTags[i].toLowerCase();
       if (hashTagsUsed.indexOf(hashTagLower) >= 0) {
-        editWindowHashTags.setCustomValidity('Ошибка в хэш-теге № ' + (i + 1) + ': повторное использование');
+        editWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_REUSE);
         return false;
       }
       hashTagsUsed.push(hashTagLower);
@@ -336,7 +348,7 @@ var openEditWindow = function () {
 
   setPictureScale(100);
   editWindowEffectNone.checked = true;
-  setPictureEffect('none');
+  setPictureEffect(EFFECT_NONE);
 
   editWindowScaleSmaller.addEventListener('click', onSmallerClick);
   editWindowScaleBigger.addEventListener('click', onBiggerClick);

@@ -64,12 +64,12 @@ var editWindowForm = document.querySelector('#upload-select-image');
 var editWindowHashTags = editWindowForm.querySelector('input[name="hashtags"]');
 var editWindowDescription = editWindowForm.querySelector('textarea[name="description"]');
 
-var randomInteger = function (min, max) {
+var getRandomInteger = function (min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 };
 
 var peekRandomElement = function (array) {
-  var i = randomInteger(0, array.length - 1);
+  var i = getRandomInteger(0, array.length - 1);
   var result = array[i];
   array.splice(i, 1);
   return result;
@@ -90,7 +90,7 @@ var buildComments = function () {
 
   for (var i = 0; i < commentsCount; i++) {
     var comment = {};
-    comment.avatar = 'img/avatar-' + randomInteger(1, 6) + '.svg';
+    comment.avatar = 'img/avatar-' + getRandomInteger(1, 6) + '.svg';
     comment.message = peekRandomElement(messages);
     comment.name = peekRandomElement(names);
 
@@ -112,7 +112,7 @@ var buildMock = function () {
     var photo = {};
     photo.url = 'photos/' + peekRandomElement(photoNumbers) + '.jpg';
     photo.description = 'Фотография #' + (i + 1);
-    photo.likes = randomInteger(MOCK_LIKES_MIN, MOCK_LIKES_MAX);
+    photo.likes = getRandomInteger(MOCK_LIKES_MIN, MOCK_LIKES_MAX);
     photo.comments = buildComments();
 
     mock.push(photo);

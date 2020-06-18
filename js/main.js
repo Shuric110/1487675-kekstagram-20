@@ -293,9 +293,7 @@ var openEditWindow = function () {
   };
 
   var validateHashTags = function () {
-    var hashTags = editWindowHashTags.value.split(' ').filter(function (h) {
-      return h;
-    });
+    var hashTags = editWindowHashTags.value.trim().split(/ +/);
     var hashTagsUsed = [];
 
     for (var i = 0; i < hashTags.length; i++) {

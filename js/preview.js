@@ -34,7 +34,7 @@
     return commentElement;
   };
 
-  var showBigPicture = function (photo) {
+  var showPreview = function (photo) {
     bigPictureImage.src = photo.url;
     bigPictureLikesCount.textContent = photo.likes;
     bigPictureCommentsCount.textContent = photo.comments.length;
@@ -59,7 +59,7 @@
   };
 
   window.fullsize = {
-    showBigPicture: showBigPicture
+    showPreview: showPreview
   };
 
 })();

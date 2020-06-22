@@ -18,17 +18,6 @@
   var MOCK_NAMES = ['Артём', 'Елена', 'Михаил', 'Ольга', 'Алексей', 'Джеймс', 'Хелен', 'Кекс'];
 
 
-  var getRandomInteger = function (min, max) {
-    return min + Math.floor(Math.random() * (max - min + 1));
-  };
-
-  var peekRandomElement = function (array) {
-    var i = getRandomInteger(0, array.length - 1);
-    var result = array[i];
-    array.splice(i, 1);
-    return result;
-  };
-
   var buildComments = function () {
     var messages = MOCK_MESSAGES.slice();
     var names = MOCK_NAMES.slice();
@@ -36,9 +25,9 @@
 
     for (var i = MOCK_COMMENTS_MIN; i < MOCK_COMMENTS_MAX; i++) {
       var comment = {};
-      comment.avatar = 'img/avatar-' + getRandomInteger(1, 6) + '.svg';
-      comment.message = peekRandomElement(messages);
-      comment.name = peekRandomElement(names);
+      comment.avatar = 'img/avatar-' + window.util.getRandomInteger(1, 6) + '.svg';
+      comment.message = window.util.peekRandomElement(messages);
+      comment.name = window.util.peekRandomElement(names);
 
       comments.push(comment);
 
@@ -60,9 +49,9 @@
 
     for (i = 0; i < MOCK_LENGTH; i++) {
       var photo = {};
-      photo.url = 'photos/' + peekRandomElement(photoNumbers) + '.jpg';
+      photo.url = 'photos/' + window.util.peekRandomElement(photoNumbers) + '.jpg';
       photo.description = 'Фотография #' + (i + 1);
-      photo.likes = getRandomInteger(MOCK_LIKES_MIN, MOCK_LIKES_MAX);
+      photo.likes = window.util.getRandomInteger(MOCK_LIKES_MIN, MOCK_LIKES_MAX);
       photo.comments = buildComments();
 
       mock.push(photo);

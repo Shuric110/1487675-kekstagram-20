@@ -32,7 +32,7 @@
     }
     if (target && target.photoData) {
       evt.preventDefault();
-      window.fullsize.showBigPicture(target.photoData);
+      window.fullsize.showPreview(target.photoData);
     }
   };
 

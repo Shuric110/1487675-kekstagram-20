@@ -198,7 +198,6 @@
     reader.readAsDataURL(uploadFileButton.files[0]);
 
     setPictureScale(100);
-    uploadWindowEffectNone.checked = true;
     setPictureEffect(EFFECT_NONE);
 
     setEventHandlers();
@@ -212,6 +211,11 @@
       unsetEventHandlers();
 
       uploadFileButton.value = '';
+      uploadWindowHashTags.value = '';
+      uploadWindowDescription.value = '';
+      setPictureScale(100);
+      uploadWindowEffectNone.checked = true;
+      setPictureEffect(EFFECT_NONE);
 
       return true;
     });

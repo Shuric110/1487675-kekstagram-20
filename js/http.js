@@ -45,7 +45,7 @@
     xhr.send(data);
   };
 
-  window.network = {
+  window.http = {
     doGetQuery: doGetQuery,
     doPostQuery: doPostQuery
   };

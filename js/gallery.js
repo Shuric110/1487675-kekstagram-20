@@ -25,6 +25,13 @@
     photosContainer.appendChild(fragment);
   };
 
+  var clearPhotos = function () {
+    var photos = photosContainer.querySelectorAll('.picture');
+    photos.forEach(function (photo) {
+      photosContainer.removeChild(photo);
+    });
+  };
+
   var onPhotoClick = function (evt) {
     var target = evt.target;
     while (target && target.matches && !target.matches('.picture')) {
@@ -40,7 +47,8 @@
   photosContainer.addEventListener('click', onPhotoClick);
 
   window.gallery = {
-    renderPhotos: renderPhotos
+    renderPhotos: renderPhotos,
+    clearPhotos: clearPhotos
   };
 
 })();

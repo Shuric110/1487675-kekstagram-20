@@ -4,18 +4,25 @@
 
   var uploadFileButton = document.querySelector('#upload-file');
 
+  var photoData;
+
   var onUploadChange = function () {
     window.uploadwnd.openUploadWindow();
   };
 
 
-  // var picturesMock = window.mock.buildPicturesMock();
-  // window.gallery.renderPhotos(picturesMock);
+  var onFilterChange = function (filterFunction) {
+    window.gallery.clearPhotos();
+    window.gallery.renderPhotos(filterFunction(photoData));
+  };
+
 
   window.backend.loadPicturesData(
       function (data) {
         // onLoad
-        window.gallery.renderPhotos(data);
+        photoData = data;
+        window.gallery.renderPhotos(photoData);
+        window.filter.showFilter(onFilterChange);
       },
       function () {
         // onError

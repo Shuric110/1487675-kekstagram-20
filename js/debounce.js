@@ -6,27 +6,27 @@
   window.debounce = function (cb) {
     var isLocked = false;
     var needExecute = false;
-    var parameters;
+    var currentParameters;
+
+    var makeTimeout = function () {
+      window.setTimeout(function () {
+        if (needExecute) {
+          cb.apply(null, currentParameters);
+          needExecute = false;
+          makeTimeout();
+        } else {
+          isLocked = false;
+        }
+      }, DEBOUNCE_INTERVAL);
+    };
 
     return function () {
-      parameters = arguments;
+      currentParameters = arguments;
       if (isLocked) {
         needExecute = true;
         return;
       }
-      cb.apply(null, parameters);
-
-      var makeTimeout = function () {
-        window.setTimeout(function () {
-          if (needExecute) {
-            cb.apply(null, parameters);
-            needExecute = false;
-            makeTimeout();
-          } else {
-            isLocked = false;
-          }
-        }, DEBOUNCE_INTERVAL);
-      };
+      cb.apply(null, currentParameters);
 
       isLocked = true;
       makeTimeout();

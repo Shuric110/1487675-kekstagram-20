@@ -39,7 +39,7 @@
     }
     if (target && target.photoData) {
       evt.preventDefault();
-      window.fullsize.showPreview(target.photoData);
+      window.preview.showPreview(target.photoData);
     }
   };
 

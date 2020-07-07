@@ -7,13 +7,13 @@
   var photoData;
 
   var onUploadChange = function () {
-    window.uploadwnd.openUploadWindow();
+    window.form.openUploadForm();
   };
 
 
-  var onFilterChange = function (filterFunction) {
+  var onFilterChange = function (cbFilterFunction) {
     window.gallery.clearPhotos();
-    window.gallery.renderPhotos(filterFunction(photoData));
+    window.gallery.renderPhotos(cbFilterFunction(photoData));
   };
 
 

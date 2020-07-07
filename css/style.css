@@ -743,6 +743,10 @@ main {
   border-radius: 5px;
 }
 
+.text__description:invalid,
+.text__hashtags:invalid {
+  box-shadow: 0 0 4px 4px #ff0000;
+}
 
 /**
  * Кнопка для отправки изображения

@@ -2,6 +2,7 @@
 
 (function () {
 
+  var IMAGE_MIME_TYPE_PREFIX = 'image/';
   var EFFECT_NONE = 'none';
   var EFFECT_DEF = {
     'none': {filter: '', minLevel: 0, maxLevel: 0, levelUnit: ''},
@@ -46,9 +47,6 @@
   var isSaving = false;
 
   var setPictureScale = function (newPictureScale) {
-    if (pictureScale === newPictureScale) {
-      return;
-    }
     pictureScale = newPictureScale;
     uploadWindowScaleValue.value = pictureScale + '%';
     uploadWindowPreviewImage.style.transform = 'scale(' + (pictureScale / 100) + ')';
@@ -113,6 +111,11 @@
   };
 
   var validateHashTags = function () {
+    if (!uploadWindowHashTags.value) {
+      uploadWindowHashTags.setCustomValidity('');
+      return true;
+    }
+
     var hashTags = uploadWindowHashTags.value.trim().split(/ +/);
     var hashTagsUsed = [];
 
@@ -190,12 +193,19 @@
     uploadWindowForm.removeEventListener('submit', onSubmit);
   };
 
-  var openUploadWindow = function () {
+  var openUploadForm = function () {
+    var file = uploadFileButton.files[0];
+
+    if (!file.type.startsWith(IMAGE_MIME_TYPE_PREFIX)) {
+      window.dialog.showErrorInfo();
+      return;
+    }
+
     var reader = new FileReader();
     reader.addEventListener('load', function (evt) {
       uploadWindowPreviewImage.src = evt.target.result;
     });
-    reader.readAsDataURL(uploadFileButton.files[0]);
+    reader.readAsDataURL(file);
 
     setPictureScale(100);
     setPictureEffect(EFFECT_NONE);
@@ -210,6 +220,7 @@
 
       unsetEventHandlers();
 
+      uploadWindowHashTags.setCustomValidity('');
       uploadFileButton.value = '';
       uploadWindowHashTags.value = '';
       uploadWindowDescription.value = '';
@@ -222,8 +233,8 @@
   };
 
 
-  window.uploadwnd = {
-    openUploadWindow: openUploadWindow
+  window.form = {
+    openUploadForm: openUploadForm
   };
 
 })();

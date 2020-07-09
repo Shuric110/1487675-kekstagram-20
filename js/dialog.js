@@ -16,9 +16,9 @@
         return;
       }
 
-      for (var i = 0; i < wndCloseButtons.length; i++) {
-        wndCloseButtons[i].removeEventListener('click', onCloseClick);
-      }
+      wndCloseButtons.forEach(function (button) {
+        button.removeEventListener('click', onCloseClick);
+      });
       window.removeEventListener('keydown', onKeyDown);
       delete wnd.closeWindow;
     };
@@ -33,9 +33,9 @@
       closeWindow(ACTION_CANCEL);
     };
 
-    for (var i = 0; i < wndCloseButtons.length; i++) {
-      wndCloseButtons[i].addEventListener('click', onCloseClick);
-    }
+    wndCloseButtons.forEach(function (button) {
+      button.addEventListener('click', onCloseClick);
+    });
     window.addEventListener('keydown', onKeyDown);
     wnd.closeWindow = closeWindow;
   };

@@ -113,7 +113,7 @@
   var validateHashTags = function () {
     if (!uploadWindowHashTags.value) {
       uploadWindowHashTags.setCustomValidity('');
-      return true;
+      return;
     }
 
     var hashTags = uploadWindowHashTags.value.trim().split(/ +/);
@@ -122,29 +122,29 @@
     for (var i = 0; i < hashTags.length; i++) {
       if (i >= MAX_HASHTAGS) {
         uploadWindowHashTags.setCustomValidity(HASHTAG_ERROR_TOOMANY);
-        return false;
+        return;
       }
 
       if (!hashTags[i].match(/^#[a-zа-я]+$/i)) {
         uploadWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_FORMAT);
-        return false;
+        return;
       }
 
       if (hashTags[i].length > MAX_HASHTAG_LENGTH) {
         uploadWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_TOOLONG);
-        return false;
+        return;
       }
 
       var hashTagLower = hashTags[i].toLowerCase();
       if (hashTagsUsed.indexOf(hashTagLower) >= 0) {
         uploadWindowHashTags.setCustomValidity(HASHTAG_ERROR_NO + (i + 1) + ': ' + HASHTAG_ERROR_REUSE);
-        return false;
+        return;
       }
       hashTagsUsed.push(hashTagLower);
     }
 
+    uploadWindowHashTags.value = hashTags.join(' ');
     uploadWindowHashTags.setCustomValidity('');
-    return true;
   };
 
   var onHashTagsChange = function () {
@@ -193,7 +193,7 @@
     uploadWindowForm.removeEventListener('submit', onSubmit);
   };
 
-  var openUploadForm = function () {
+  var open = function () {
     var file = uploadFileButton.files[0];
 
     if (!file.type.startsWith(IMAGE_MIME_TYPE_PREFIX)) {
@@ -234,7 +234,7 @@
 
 
   window.form = {
-    openUploadForm: openUploadForm
+    open: open
   };
 
 })();

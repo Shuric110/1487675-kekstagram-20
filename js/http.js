@@ -18,17 +18,21 @@
       if (xhr.status === HTTP_OK) {
         onLoad(xhr.response);
       } else {
-        onError(ERROR_STATUS + xhr.status + ' ' + xhr.statusText);
+        if (onError) {
+          onError(ERROR_STATUS + xhr.status + ' ' + xhr.statusText);
+        }
       }
     });
 
-    xhr.addEventListener('error', function () {
-      onError(ERROR_CONNECTION);
-    });
+    if (onError) {
+      xhr.addEventListener('error', function () {
+        onError(ERROR_CONNECTION);
+      });
 
-    xhr.addEventListener('timeout', function () {
-      onError(ERROR_TIMEOUT);
-    });
+      xhr.addEventListener('timeout', function () {
+        onError(ERROR_TIMEOUT);
+      });
+    }
 
     return xhr;
   };

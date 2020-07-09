@@ -2,11 +2,11 @@
 
 (function () {
 
-  var photoPattern = document.querySelector('#picture').content.querySelector('.picture');
+  var photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
   var photosContainer = document.querySelector('.pictures');
 
   var makePhotoElement = function (photoData) {
-    var photo = photoPattern.cloneNode(true);
+    var photo = photoTemplate.cloneNode(true);
     photo.querySelector('.picture__img').src = photoData.url;
     photo.querySelector('.picture__likes').textContent = photoData.likes;
     photo.querySelector('.picture__comments').textContent = photoData.comments.length;
@@ -39,7 +39,7 @@
     }
     if (target && target.photoData) {
       evt.preventDefault();
-      window.preview.showPreview(target.photoData);
+      window.preview.show(target.photoData);
     }
   };
 

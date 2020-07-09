@@ -66,7 +66,7 @@
     addNextComments();
   };
 
-  var showPreview = function (photo) {
+  var show = function (photo) {
     bigPictureImage.src = photo.url;
     bigPictureLikesCount.textContent = photo.likes;
     bigPictureCommentsCount.textContent = photo.comments.length;
@@ -88,7 +88,7 @@
   };
 
   window.preview = {
-    showPreview: showPreview
+    show: show
   };
 
 })();

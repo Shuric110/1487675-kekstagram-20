@@ -40,14 +40,14 @@
     }
   };
 
-  var showFilter = function (cb) {
+  var show = function (cb) {
     filterCallback = window.debounce(cb);
     filterControl.classList.remove('img-filters--inactive');
     filterControl.addEventListener('click', onFilterClick);
   };
 
   window.filter = {
-    showFilter: showFilter
+    show: show
   };
 
 })();

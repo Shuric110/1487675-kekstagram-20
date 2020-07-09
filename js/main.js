@@ -7,7 +7,7 @@
   var photoData;
 
   var onUploadChange = function () {
-    window.form.openUploadForm();
+    window.form.open();
   };
 
 
@@ -22,10 +22,7 @@
         // onLoad
         photoData = data;
         window.gallery.renderPhotos(photoData);
-        window.filter.showFilter(onFilterChange);
-      },
-      function () {
-        // onError
+        window.filter.show(onFilterChange);
       }
   );
 
